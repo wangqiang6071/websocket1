@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>服务器往浏览器发送消息</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
+    <script src="//cdn.jsdelivr.net/sockjs/1.0.0/sockjs.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+</head>
+
+<body>
+    <div id="msg"></div>
+    <script>
+        var sock = new SockJS("http://localhost:8080/socket");
+        var stomClient = Stomp.over(sock);
+        stomClient.connect({}, function (data) {
+            stomClient.subscribe("/server/serverToWeb", function (response) {
+                console.log(response.body);
+                $('#msg').html(response.body);
+            })
+        })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>浏览器与浏览器发送消息</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
+    <script src="//cdn.jsdelivr.net/sockjs/1.0.0/sockjs.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+</head>
+
+<body>
+聊天室：当前用户为:${id}
+<form action="/server/point2pointmsg" method="post">
+    <div>
+        <input type="text" name="msg">
+        接收人的id:<select name="userid">
+                    <option value ="1">1</option>
+                    <option value ="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+        <input type="submit" value="发送消息">
+    </div>
+</form>
+    接收到的消息:<div id="msg"></div>
+
+    <script>
+        var id='${id}';
+        var sock = new SockJS("http://localhost:8080/socket");
+        var stomClient = Stomp.over(sock);
+        stomClient.connect({}, function (data) {
+            stomClient.subscribe("/user/"+id+"/serverPointToPointWeb", function (response) {
+                console.log(response.body);
+                $('#msg').html(response.body);
+            })
+        })
+    </script>
+</body>
+
+</html>
